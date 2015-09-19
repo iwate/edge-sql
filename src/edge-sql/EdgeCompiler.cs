@@ -17,7 +17,13 @@ public class EdgeCompiler
             connectionString = (string)tmp;
         }
 
-        if (command.StartsWith("select ", StringComparison.InvariantCultureIgnoreCase))
+        if (command.StartsWith("select ", StringComparison.InvariantCultureIgnoreCase)
+            || (command.StartsWith("insert ", StringComparison.InvariantCultureIgnoreCase)
+                && command.IndexOf("output ", StringComparison.InvariantCultureIgnoreCase) != -1)
+            || (command.StartsWith("update ", StringComparison.InvariantCultureIgnoreCase)
+                && command.IndexOf("output ", StringComparison.InvariantCultureIgnoreCase) != -1)
+            || (command.StartsWith("delete ", StringComparison.InvariantCultureIgnoreCase)
+                && command.IndexOf("output ", StringComparison.InvariantCultureIgnoreCase) != -1))
         {
             return async (queryParameters) =>
             {
