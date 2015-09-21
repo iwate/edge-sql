@@ -5,7 +5,7 @@
     "url": "http://blog.qaramell.com/author/iwate",
     "twitter": "_iwate"
   },
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Edge-sql-o: based on edge-sql with 'output' at insert/update/delete",
   "tags" : ["edge", "net", "clr", "c#", "managed", ".net", "ado.net"],
   "main": "./lib/edge-sql.js",
