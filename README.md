@@ -17,7 +17,7 @@ var create = edge.func('sql-o', function () {
   */ 
 });
 ```
-### Passable Array value
+### Passable array value
 ```
 var whereIn = edge.func('sql-o', function(){
   /*
