@@ -94,7 +94,7 @@ public class EdgeCompiler
         List<object> rows = new List<object>();
         this.AddParamaters(command, parameters);
         await connection.OpenAsync();
-        using (SqlDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.CloseConnection))
+        using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
         {
             IDataRecord record = (IDataRecord)reader;
             while (await reader.ReadAsync())
