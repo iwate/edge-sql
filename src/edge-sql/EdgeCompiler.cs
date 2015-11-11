@@ -59,11 +59,21 @@ public class EdgeCompiler
         {
             foreach (KeyValuePair<string, object> parameter in parameters)
             {
+                var objects = parameter.Value as IEnumerable<IDictionary<string, object>>;
+                if (objects != null)
+                {
+                    command.AddObjectsParamaters(objects, parameter.Key);
+                    continue;
+                }
+
                 var values = parameter.Value as IEnumerable<object>;
                 if (values != null)
+                {
                     command.AddArrayParameters(values, parameter.Key);
-                else
-                    command.Parameters.AddWithValue(parameter.Key, parameter.Value ?? DBNull.Value);
+                    continue;
+                }
+
+                command.Parameters.AddWithValue(parameter.Key, parameter.Value ?? DBNull.Value);
             }
         }
     }

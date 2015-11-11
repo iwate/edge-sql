@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 
@@ -34,6 +35,32 @@ public static class SqlCommandExtension
         }
 
         cmd.CommandText = cmd.CommandText.Replace("{" + paramNameRoot + "}", string.Join(separator, parameterNames));
+
+        return parameters.ToArray();
+    }
+    public static SqlParameter[] AddObjectsParamaters(this SqlCommand cmd, IEnumerable<IDictionary<string, object>> objects, string paramNameRoot, int start = 1, string separator = ", ")
+    {
+        var pattern = string.Format(@"\{{{0}:(.*?)\}}", paramNameRoot);
+        var parameters = new List<SqlParameter>();
+        var baseMatch = Regex.Match(cmd.CommandText, pattern);
+        if (!baseMatch.Success)
+            return parameters.ToArray();
+
+        var groupBase = baseMatch.Groups[1].Value;
+        var paramMatch = Regex.Match(groupBase, @"@([a-z|A-Z|0-9]+)");
+        var paramNbr = start;
+        var groups = new List<string>();
+        foreach (var obj in objects)
+        {
+            foreach (KeyValuePair<string, object> param in obj)
+            {
+                var paramName = string.Format("@{0}{1}", paramNameRoot, paramNbr++);
+                var group = groupBase.Replace(string.Format("@{0}", param.Key), paramName);
+                groups.Add(group);
+                parameters.Add(cmd.Parameters.AddWithValue(paramName, param.Value));
+            }
+        }
+        cmd.CommandText = Regex.Replace(cmd.CommandText, pattern, string.Join(separator, groups));
 
         return parameters.ToArray();
     }
